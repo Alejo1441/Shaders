@@ -1,10 +1,10 @@
 # Práctica de shaders
 
-Para la creación de los patrones generativos, se hace uso de tres funciones sinusoidales con distintas ffrecuencias, obteniendo un conjunto de ondas que se distribuyen diagonalmente por la pantalla
+Para la creación de los patrones generativos, se hace uso de tres funciones sinusoidales con distintas frecuencias, obteniendo un conjunto de ondas que se distribuyen diagonalmente por la pantalla.
 
-También se usan las funciones mix() y smoothstep()  para combinar los colores de una paleta inspirada en la estética visual del nuevo GTA VI, compuesta por tonos rosas, violetas, naranjas y cian
+También se usan las funciones mix() y smoothstep()  para combinar los colores de una paleta inspirada en la estética visual del nuevo GTA VI, compuesta por tonos rosas, violetas, naranjas y cian.
 
-ahora vamos a entrar un poco más en detalle
+Ahora vamos a entrar un poco más en detalle
 
 ```
 uniform vec2 u_resolution;
@@ -12,9 +12,9 @@ uniform float u_time;
 vec2 st = gl_FragCoord.xy/u_resolution;
 float t = u_time * 0.2;
 ```
-vec2 u_resolution se utiliza para el tamaño del canvas y luego la dividimos por la resolución de la ventana para normalizarla y que vaya de 1 a 0 y luego u_time multiplicado por una constante, para hacer una animación más lenta y suavizada
+vec2 u_resolution se utiliza para el tamaño del canvas y luego la dividimos por la resolución de la ventana para normalizarla y que vaya de 1 a 0 y luego u_time multiplicado por una constante, para hacer una animación más lenta y suavizada.
 
-para esto se buscó en el guion de la asignatura y el capítulo 3 de The Book of Shaders.
+Para esto se buscó en el guion de la asignatura y el capítulo 3 de The Book of Shaders.
 https://thebookofshaders.com/03/?lan=es
 
 ```
@@ -32,11 +32,11 @@ En la primera parte de este cacho de código, se evita que las ondas sean rectas
 
 Posteriormente sumamos las coordenadas  st.x y st.y, para hacer que vayan en diagonal y a este resultado le sumamos las deformaciones anteriores
 
-En la segunda parte se utilizan tres funciones sinusoidales con distinta frecuencia espaciales, concretamente 8, 13 y 18.
+En la segunda parte se utilizan tres funciones sinusoidales con distintas frecuencias espaciales, concretamente 8, 13 y 18.
 
 La utilización de frecuencias diferentes permite obtener ondas con distintos números de repeticiones. Además, se modifica la fase de cada función en función del tiempo, utilizando diferentes multiplicadores y signos para conseguir que las ondas tengan comportamientos dinámicos diferentes.
 
-para esta parte, se consultó el capítulo 5 de The Book of Shaders y el artículo de Blake Crosley, en el que se describen técnicas de superposición de ondas
+Para esta parte, se consultó el capítulo 5 de The Book of Shaders y el artículo de Blake Crosley, en el que se describen técnicas de superposición de ondas
 
 https://blakecrosley.com/es/blog/glsl-shader-lab
 https://thebookofshaders.com/05/?lan=es
@@ -69,7 +69,7 @@ Posteriormente, se utiliza la primera onda, "a", para realizar una mezcla entre 
 
 Para las dos últimas mezclas, se utiliza la función smoothstep, con el objetivo de conseguir transiciones suaves entre los colores, además se utilizan constantes de 0,75 y 0,35 para controlar la influencia del naranja y el cian, evitando que tengan demasiado protagonismo
 
-para esta parte se consulto el capítulo 5 y 6 de The Book of Shaders.
+para esta parte se consultó los capítulos 5 y 6 de The Book of Shaders.
 
 
 https://thebookofshaders.com/06/?lan=es
@@ -93,7 +93,7 @@ Y para esta parte también se han usado los capítulos 5 y 6 de Book of Shaders.
 
 
 
-Para acabar, hare una explicación del tiny code que he realizado
+Para acabar, haré una explicación del tiny code que he realizado
 
 ```
 precision mediump float;
@@ -104,23 +104,23 @@ uniform float u_time;
 void main(){
 vec2 p=gl_FragCoord.xy/u_resolution.y;
 float t=.9*u_time,
-d=p.x+p.y+.5*sin(5.*p.y+.5*t)+.1*sin(6.*p.x-.35*t), // direccion diagona y deformación de las coordenadas
+d=p.x+p.y+.5*sin(5.*p.y+.5*t)+.1*sin(6.*p.x-.35*t), // dirección diagonal y deformación de las coordenadas
 a=.5+.5*sin(8.*d-t);                                // primera onda normalizada entre 0 y 1
 V v=mix(V(.45,.1,.7),V(1.,.25,.65),a);              // mezcla de violeta y rosa
-v=mix(v,V(1.,.55,.25),.75*S(-.6,.9,sin(13.*d+.45*t)));  // segunda onda: introduccion naranja
+v=mix(v,V(1.,.55,.25),.75*S(-.6,.9,sin(13.*d+.45*t)));  // segunda onda: introducción naranja
 v=mix(v,V(.1,.85,1.),.35*S(.1,1.,sin(18.*d-.6*t)));     // tercera onda: introducción del cian
 gl_FragColor=vec4(mix(V(.08,.02,.22)+p.y*V(.32,.04,.14),v,.45+.55*a)+.12*S(.65,1.,a),1.);
-}   // en esta ultima linea se hace, el degradado del fondo, mezcla de colores e iluminación
-    // tambien se agrupan las operaciones para reducir el tamaño
+}   // en esta última linea se hace, el degradado del fondo, mezcla de colores e iluminación
+    // también se agrupan las operaciones para reducir el tamaño
 ```
 
-En primer lugar, se ahce uso de las macros mediante #define, sustituyendo smoothsteep por S y vec3 por V, ya que son expresiones que se utlicen varias veces
+En primer lugar, se hace uso de las macros mediante #define, sustituyendo smoothstep por S y vec3 por V, ya que son expresiones que se utilizan varias veces
 
-Tambien se reduce el nombre de las variables, se eliminan los espacios y ceros innecesarios de los valores decimales y se agrupan las declaraciones de variables que son del mismo tipo
+También se reduce el nombre de las variables, se eliminan los espacios y ceros innecesarios de los valores decimales y se agrupan las declaraciones de variables que son del mismo tipo
 
-Por otro lado, se eliminan variables intermedias, realizando calculos directamente dentro de otras expresiones. EN el caso de la segunda y tercera onda, se modifican los límites de smoothsteep() para evitar que tener que normalizar previamente.
+Por otro lado, se eliminan variables intermedias, realizando cálculos directamente dentro de otras expresiones. En el caso de la segunda y tercera onda, se modifican los límites de smoothstep() para evitar que tener que normalizar previamente.
 
-Por último, se sustituye la interpolación del fondo por su expresion matemática equivalente y se agrupan las operaciones de mezcla de colores e iluminación en la asignación de gl_FragColor
+Por último, se sustituye la interpolación del fondo por su expresión matemática equivalente y se agrupan las operaciones de mezcla de colores e iluminación en la asignación de gl_FragColor
 
 
 
